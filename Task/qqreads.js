@@ -56,8 +56,10 @@ http-request https:\/\/mqqapi\.reader\.qq\.com\/mqq\/addReadTimeWithBid? script-
 const jsname='企鹅读书'
 const $ = Env(jsname)
 const notify = $.isNode() ? require('./sendNotify') : '';
-var tz=''
-var kz=''
+var tz='';
+var kz='';
+var task='';
+var config='';
 
 const logs = 0;   //0为关闭日志，1为开启
 const notifyInterval=3
