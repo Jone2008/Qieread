@@ -13,6 +13,7 @@
 11.27 调整通知为，成功开启宝箱再通知
 11.28 修复错误
 11.29 更新 支持action.默认每天21点到21点20通知
+12.2 修复打卡问题
 
 ⚠️cookie获取方法：
 
@@ -61,6 +62,8 @@ var kz='';
 var task='';
 var config='';
 
+var COOKIES_SPLIT='\n'  //自定义多cookie之间连接的分隔符，默认为\n换行分割，不熟悉的不要改动和配置，为了兼容本地node执行
+
 const logs = 0;   //0为关闭日志，1为开启
 const notifyInterval=3
 //0为关闭通知，1为所有通知，2为宝箱领取成功通知，3为宝箱每15次通知一次
@@ -77,20 +80,24 @@ let qqreadhdArr = [], qqreadheaderVal = '',
     qqreadHD = [], qqreadtimeURL = [], 
     qqreadtimeHD = [];    
   if ($.isNode()) {
-  if (process.env.QQREAD_HEADER && process.env.QQREAD_HEADER.indexOf('\n') > -1) {
-  qqreadHD = process.env.QQREAD_HEADER.split('\n');
+  if (process.env.COOKIES_SPLIT){
+      COOKIES_SPLIT = process.env.COOKIES_SPLIT;
+  };
+  console.log(`============ cookies分隔符为：${COOKIES_SPLIT} =============\n`);
+  if (process.env.QQREAD_HEADER && process.env.QQREAD_HEADER.indexOf(COOKIES_SPLIT) > -1) {
+  qqreadHD = process.env.QQREAD_HEADER.split(COOKIES_SPLIT);
   } else {
       qqreadHD = process.env.QQREAD_HEADER.split()
   };
        
-  if (process.env.QQREAD_TIMEURL && process.env.QQREAD_TIMEURL.indexOf('\n') > -1) {
-  qqreadtimeURL = process.env.QQREAD_TIMEURL.split('\n');
+  if (process.env.QQREAD_TIMEURL && process.env.QQREAD_TIMEURL.indexOf(COOKIES_SPLIT) > -1) {
+  qqreadtimeURL = process.env.QQREAD_TIMEURL.split(COOKIES_SPLIT);
   } else {
       qqreadtimeURL = process.env.QQREAD_TIMEURL.split()
   };
   
-  if (process.env.QQREAD_TIMEHD && process.env.QQREAD_TIMEHD.indexOf('\n') > -1) {
-  qqreadtimeHD = process.env.QQREAD_TIMEHD.split('\n');
+  if (process.env.QQREAD_TIMEHD && process.env.QQREAD_TIMEHD.indexOf(COOKIES_SPLIT) > -1) {
+  qqreadtimeHD = process.env.QQREAD_TIMEHD.split(COOKIES_SPLIT);
   } else {
       qqreadtimeHD = process.env.QQREAD_TIMEHD.split()
   }; 
@@ -168,37 +175,37 @@ qqreadconfig();//时长查询
 else if (i==2)
 qqreadtask();//任务列表
 
-else if (i==3&&task.data.taskList[0].doneFlag==0)
+else if (i==3&&task.data.taskList[2].doneFlag==0)
 qqreadsign();//金币签到
 
 else if (i==4&&task.data.treasureBox.doneFlag==0)
 qqreadbox();//宝箱
 
-else if (i==5&&task.data.taskList[2].doneFlag==0)
+else if (i==5&&task.data.taskList[1].doneFlag==0)
 qqreadssr1();//阅读金币1
 
 else if (i==6&&config.data.pageParams.todayReadSeconds/3600<=maxtime)
 qqreadtime();//上传时长
 
-else if (i==7&&task.data.taskList[0].doneFlag==0)
+else if (i==7&&task.data.taskList[2].doneFlag==0)
 qqreadtake();//阅豆签到
 
-else if (i==8&&task.data.taskList[1].doneFlag==0)
+else if (i==8&&task.data.taskList[0].doneFlag==0)
 qqreaddayread();//阅读任务
 
-else if (i==9&&task.data.taskList[2].doneFlag==0)
+else if (i==9&&task.data.taskList[1].doneFlag==0)
 qqreadssr2();//阅读金币2
 
 else if (i==10&&task.data.taskList[3].doneFlag==0)
 qqreadvideo();//视频任务
 
-else if(i==11&&task.data.taskList[0].doneFlag==0)
+else if(i==11&&task.data.taskList[2].doneFlag==0)
 qqreadsign2();//签到翻倍
 
 else if (i==12&&task.data.treasureBox.videoDoneFlag==0)
 qqreadbox2();//宝箱翻倍
 
-else if (i==13&&task.data.taskList[2].doneFlag==0)
+else if (i==13&&task.data.taskList[1].doneFlag==0)
 qqreadssr3();//阅读金币3
 
 else if (i==14)
