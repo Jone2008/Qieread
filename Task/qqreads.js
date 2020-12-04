@@ -614,7 +614,7 @@ return new Promise((resolve, reject) => {
  url:`https://mqqapi.reader.qq.com/mqq/pickPackageInit`,
    headers: JSON.parse(qqreadheaderVal),   
     };
-if (wktime.data.readTime>=wktimess){
+if (wktime.data.readTime>=wktimess&&wktime.data.readTime<=1250){
     $.get(toqqreadpickurl,(error, response, data) =>{
      if(logs) $.log(`${jsname},周阅读时长奖励任务: ${data}`)
      pick =JSON.parse(data)
