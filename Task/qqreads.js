@@ -16,15 +16,23 @@
 12.3 缩短运行时间，由于企鹅读书版本更新.请手动进去看一次书
 12.3 调整推送时间为12点和24点左右
 12.6 精简打印通知
-12.7 解决1金币问题
+12.7 解决1金币问题，务必重新获取一次更新body
 
 ⚠️cookie获取方法：
 
 进 https://m.q.qq.com/a/s/d3eacc70120b9a37e46bad408c0c4c2a  
 
-进一本书 看 10秒以下 然后退出，获取阅读时长cookie和更新body，看书一定不能超过10秒
+进书库选择一本书,看10秒以下,然后退出，获取时长url和时长header以及更新body，看书一定不能超过10秒
 
-可能某些页面会卡住，但是能获取到cookie，再注释cookie重写就行了！
+
+
+Secrets对应关系如下，多账号默认换行
+
+qqreadbodyVal         👉   QQREAD_BODY
+qqreadtimeurlVal      👉   QQREAD_TIMEURL
+qqreadtimeheaderVal   👉   QQREAD_TIMEHD
+
+
 
 ⚠️宝箱奖励为20分钟一次，自己根据情况设置定时，建议设置11分钟一次
 
@@ -32,7 +40,7 @@ hostname=mqqapi.reader.qq.com
 
 ############## 圈x
 
-#企鹅读书获取cookie
+#企鹅读书获取更新body
 https:\/\/mqqapi\.reader\.qq\.com\/log\/v4\/mqq\/track url script-request-body https://raw.githubusercontent.com/ziye12/JavaScript/master/Task/qqreads.js
 
 #企鹅读书获取时长cookie
@@ -40,19 +48,19 @@ https:\/\/mqqapi\.reader\.qq\.com\/mqq\/addReadTimeWithBid? url script-request-h
 
 ############## loon
 
-//企鹅读书获取cookie
-http-request https:\/\/mqqapi\.reader\.qq\.com\/log\/v4\/mqq\/track script-path=https://raw.githubusercontent.com/ziye12/JavaScript/master/Task/qqreads.js,requires-body=true, tag=企鹅读书获取cookie
+//企鹅读书获取更新body
+http-request https:\/\/mqqapi\.reader\.qq\.com\/log\/v4\/mqq\/track script-path=https://raw.githubusercontent.com/ziye12/JavaScript/master/Task/qqreads.js,requires-body=true, tag=企鹅读书获取更新body
 
 //企鹅读书获取时长cookie
 http-request https:\/\/mqqapi\.reader\.qq\.com\/mqq\/addReadTimeWithBid? script-path=https://raw.githubusercontent.com/ziye12/JavaScript/master/Task/qqreads.js, requires-header=true, tag=企鹅读书获取时长cookie
 
 ############## surge
 
-//企鹅读书获取cookie
-企鹅读书 = type=http-request,pattern=https:\/\/mqqapi\.reader\.qq\.com\/log\/v4\/mqq\/track,script-path=https://raw.githubusercontent.com/ziye12/JavaScript/master/Task/qqreads.js, 
+//企鹅读书获取更新body
+企鹅读书获取更新body = type=http-request,pattern=https:\/\/mqqapi\.reader\.qq\.com\/log\/v4\/mqq\/track,script-path=https://raw.githubusercontent.com/ziye12/JavaScript/master/Task/qqreads.js, 
 
 //企鹅读书获取时长cookie
-企鹅读书 = type=http-request,pattern=https:\/\/mqqapi\.reader\.qq\.com\/mqq\/addReadTimeWithBid?,script-path=https://raw.githubusercontent.com/ziye12/JavaScript/master/Task/qqreads.js, 
+企鹅读书获取时长cookie = type=http-request,pattern=https:\/\/mqqapi\.reader\.qq\.com\/mqq\/addReadTimeWithBid?,script-path=https://raw.githubusercontent.com/ziye12/JavaScript/master/Task/qqreads.js, 
 
 
 */
@@ -156,28 +164,35 @@ if ($.isNode()) {
 
 if ((isGetCookie = typeof $request !== "undefined")) {
   GetCookie();
+$.done();
 }
 
 function GetCookie() {
-  if ($request && $request.url.indexOf("track") >= 0) {
-    const qqreadbodyVal = $request.body;
-    if (qqreadbodyVal) $.setdata(qqreadbodyVal, "qqreadbd");
-    $.log(`[${jsname}] 获取更新body: 成功,qqreadbodyVal: ${qqreadbodyVal}`);
-    $.msg(jsname, `获取更新body: 成功🎉`, ``);
-  } else if ($request && $request.url.indexOf("addReadTimeWithBid?") >= 0) {
+
+if ($request && $request.url.indexOf("addReadTimeWithBid?") >= 0) {
     const qqreadtimeurlVal = $request.url;
     if (qqreadtimeurlVal) $.setdata(qqreadtimeurlVal, "qqreadtimeurl");
     $.log(
-      `[${jsname}] 获取阅读时长url: 成功,qqreadtimeurlVal: ${qqreadtimeurlVal}`
+      `[${jsname}] 获取时长url: 成功,qqreadtimeurlVal: ${qqreadtimeurlVal}`
     );
-
+ $.msg(jsname, `获取时长url: 成功🎉`, ``);
     const qqreadtimeheaderVal = JSON.stringify($request.headers);
     if (qqreadtimeheaderVal) $.setdata(qqreadtimeheaderVal, "qqreadtimehd");
     $.log(
       `[${jsname}] 获取时长header: 成功,qqreadtimeheaderVal: ${qqreadtimeheaderVal}`
     );
-    $.msg(jsname, `获取阅读时长cookie: 成功🎉`, ``);
+    $.msg(jsname, `获取时长header: 成功🎉`, ``);
   }
+  else if ($request &&$request.body.indexOf("bookDetail_bottomBar_read_C")>=0&&$request.body.indexOf("topBar_left_back_C")<0&&$request.body.indexOf("bookRead_dropOut_shelfYes_C")<0){
+    const qqreadbodyVal = $request.body;
+    if (qqreadbodyVal) $.setdata(qqreadbodyVal, "qqreadbd");
+    $.log(
+      `[${jsname}] 获取更新body: 成功,qqreadbodyVal: ${qqreadbodyVal}`
+    );
+    $.msg(jsname, `获取更新body: 成功🎉`, ``);
+
+    } 
+
 }
 
 
