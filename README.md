@@ -1,7 +1,4 @@
-### Technologies used
-<img align="left" alt="Python logo" height="100px" src="https://raw.githubusercontent.com/tony-nguyen1/tony-nguyen1/main/.github/images/PythonLogo.svg"/>
-
-<img align="left" alt="Python logo" height="100px" src="https://github-readme-stats.vercel.app/api/top-langs/?username=Water008&layout=compact&hide_border=true"/>
+<p align="center"><img alt="Water's github stats" src="https://github-readme-stats.vercel.app/api?username=Water008&show_icons=true&hide_border=true" /></p>
 
 12.09凌晨经验证均已解决1金币问题
 
