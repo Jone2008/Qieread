@@ -93,7 +93,7 @@ const notifyInterval = 3;
 
 const dd = 1; // 单次任务延迟,默认1秒
 const TIME = 30; // 单次时长上传限制，默认5分钟
-const maxtime = 1; // 每日上传时长限制，默认12小时
+const maxtime = 12; // 每日上传时长限制，默认12小时
 const wktimess = 1200; // 周奖励领取标准，默认1200分钟
 
 const d = new Date(new Date().getTime() + 8 * 60 * 60 * 1000);
