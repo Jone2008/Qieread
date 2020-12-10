@@ -1,3 +1,8 @@
+### Technologies used
+<img align="left" alt="Python logo" height="100px" src="https://raw.githubusercontent.com/tony-nguyen1/tony-nguyen1/main/.github/images/PythonLogo.svg"/>
+
+<img align="left" alt="Python logo" height="100px" src="https://github-readme-stats.vercel.app/api/top-langs/?username=Water008&layout=compact&hide_border=true"/>
+
 12.09凌晨经验证均已解决1金币问题
 
 12.07同步更新ziye12脚本，解决1金币问题，请务必更新qqreads.js和qqread.yml两个文件，原来三个secrets中的一个QQREAD_HEADER请手动更改成QQREAD_BODY，删除后重新添加，抓取cookie代码已更改必须同步更新获取。三个值重新获取后填写，更新完成后手动运行下即可
