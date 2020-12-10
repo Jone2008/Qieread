@@ -219,7 +219,6 @@ if ($request && $request.url.indexOf("addReadTimeWithBid?") >= 0) {
 
 
 
-
 all();
 function all() {
   qqreadbodyVal = qqreadbdArr[K];
