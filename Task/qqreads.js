@@ -22,6 +22,7 @@ TG交流群       https://t.me/joinchat/AAAAAE7XHm-q1-7Np-tF3g
 12.7 解决1金币问题，务必重新获取一次更新body
 12.8 更新支持boxjs
 12.10 默认现金大于10且在23点提现10元，23点40后显示今日收益统计
+12.11 修复git与手机 时间不兼容问题
       
 
 ⚠️cookie获取方法：
@@ -95,7 +96,8 @@ const TIME = 30; // 单次时长上传限制，默认5分钟
 const maxtime = 12; // 每日上传时长限制，默认12小时
 const wktimess = 1200; // 周奖励领取标准，默认1200分钟
 
-const d = new Date(new Date().getTime() + 8 * 60 * 60 * 1000);
+const d = new Date(new Date().getTime() + 8 * 60 * 60 * 1000);//GITHUB
+const b = new Date(new Date().getTime());//手机
 
 const qqreadbdArr = [];
 let qqreadbodyVal = "";
@@ -183,6 +185,13 @@ if ($.isNode()) {
   }
 }
 
+if ($.isNode()) {
+const daytime=new Date(new Date().toLocaleDateString()).getTime()- 8 * 60 * 60 * 1000
+}else {
+const daytime=new Date(new Date().toLocaleDateString()).getTime()
+}
+
+
 if ((isGetCookie = typeof $request !== "undefined")) {
   GetCookie();
 $.done();
@@ -258,16 +267,21 @@ function all() {
           if (task.data && task.data.taskList[2].doneFlag == 0)
               qqreadsign2();// 签到翻倍
 }    
-     else if (i == 8){
-          if (task.data && 
-task.data.user.amount >= 100000&&d.getHours() == 23)
+     else if (i == 8&&task.data && 
+task.data.user.amount >= 100000){
+          if ($.isNode()&&d.getHours() == 23)
+              qqreadwithdraw();//现金提现
+     else if (b.getHours() == 23)
               qqreadwithdraw();//现金提现
 }
+
      else if (i == 9){
-          if (d.getHours() == 23 && d.getMinutes() >= 40)
+          if ($.isNode()&&d.getHours() == 23 && d.getMinutes() >= 40)
+              qqreadtrans();//今日收益累计
+    else  if (b.getHours() == 23 && b.getMinutes() >= 40)
               qqreadtrans();//今日收益累计
 }
-     else if (i == 11 ){        
+     else if (i == 11 ){   
           if (task.data && task.data.treasureBox.videoDoneFlag == 0)
               qqreadbox2();// 宝箱翻倍
     if (task.data && task.data.taskList[1].doneFlag == 0)
@@ -337,7 +351,6 @@ function qqreadtrans() {
   return new Promise((resolve, reject) => {  
 for(var y=1;y<9;y++){
      let day=0;
-    const daytime=new Date(new Date().toLocaleDateString()).getTime()
     const toqqreadtransurl = { 
       url: "https://mqqapi.reader.qq.com/mqq/red_packet/user/trans/list?pn="+y, 
       headers: JSON.parse(qqreadtimeheaderVal), 
