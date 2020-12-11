@@ -186,9 +186,9 @@ if ($.isNode()) {
 }
 
 if ($.isNode()) {
-const daytime=new Date(new Date().toLocaleDateString()).getTime()- 8 * 60 * 60 * 1000
+ daytime=new Date(new Date().toLocaleDateString()).getTime()- 8 * 60 * 60 * 1000
 }else {
-const daytime=new Date(new Date().toLocaleDateString()).getTime()
+ daytime=new Date(new Date().toLocaleDateString()).getTime()
 }
 
 
