@@ -428,6 +428,10 @@ function qqreadinfo() {
       info = JSON.parse(data);
       kz += `\n========== 【${info.data.user.nickName}】 ==========\n`;
       tz += `\n========== 【${info.data.user.nickName}】 ==========\n`;
+      if (info.code==-2)
+      kz += `\n========== 【⚠️COOKE失效，请重新获取】 ==========\n`;
+      tz += `\n========== 【⚠️COOKE失效，请重新获取】 ==========\n`;
+     
 
       resolve();
     });
