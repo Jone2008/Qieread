@@ -1,8 +1,0 @@
-# 使用方法见[@lxk0301](https://raw.githubusercontent.com/lxk0301/scripts/master/githubAction.md)
-
-version: "1"
-rules:                      # Array of rules
-  - base: main            # Required. Target branch
-    upstream: Jone2008:main    # Required. Must be in the same fork network.
-    mergeMethod: none  # Optional, one of [none, merge, squash, rebase, hardreset], Default: none.
-    mergeUnstable: true    # Optional, merge pull request even when the mergeable_state is not clean. Default: false
