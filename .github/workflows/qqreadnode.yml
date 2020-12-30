@@ -15,9 +15,9 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.repository.owner.id == github.event.sender.id
     env:
-        QQREAD_BODY: ${{ secrets.QQREAD_BODY }}
-        QQREAD_TIMEURL: ${{ secrets.QQREAD_TIMEURL }}
-        QQREAD_TIMEHD: ${{ secrets.QQREAD_TIMEHD }}
+        qqreadbodyVal: ${{ secrets.QQREAD_BODY }}
+        qqreadtimeurlVal: ${{ secrets.QQREAD_TIMEURL }}
+        qqreadtimeheaderVal: ${{ secrets.QQREAD_TIMEHD }}
         
     steps:
       - name: Checkout
