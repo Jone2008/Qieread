@@ -86,6 +86,7 @@ const notify = $.isNode() ? require("./sendNotify") : "";
 let tz = "";
 let kz = "";
 let task = "";
+let CASH = "";
 let config = "";
 let K = 0;
 
