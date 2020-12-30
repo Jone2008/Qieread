@@ -1,5 +1,7 @@
 <p align="center"><img alt="Water's github stats" src="https://github-readme-stats.vercel.app/api?username=Water008&show_icons=true&hide_border=true" /></p>
 
+12.30同步ziye12更新脚本，请务必添加新Secrets，name为QQREAD_CASH,值：可设置0 1 2 10 30 50 100 ，设置0即为关闭
+
 12.09凌晨经验证均已解决1金币问题
 
 12.07同步更新ziye12脚本，解决1金币问题，请务必更新qqreads.js和qqread.yml两个文件，原来三个secrets中的一个QQREAD_HEADER请手动更改成QQREAD_BODY，删除后重新添加，抓取cookie代码已更改必须同步更新获取。三个值重新获取后填写，更新完成后手动运行下即可
