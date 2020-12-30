@@ -33,7 +33,7 @@ jobs:
           cd ~/JavaScript
           npm install
       - name: '运行 【企鹅读书开箱】'
-        if: env.QQREAD_TIMEHD
+        if: env.QQREADTIMEHEADERVAL
         run: |
           cd ~/JavaScript
           node Task/qqreadnode.js
