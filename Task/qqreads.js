@@ -270,8 +270,10 @@ if (!qqreadbdArr[0]) {
         qqreadtask();// 任务列表
           if (config.data &&config.data.pageParams.todayReadSeconds / 3600 <= maxtime)qqreadtime();   // 上传时长
 }     
-     else if (i == 3 &&wktime.data.readTime >= wktimess && wktime.data.readTime <= 1250){
-              qqreadpick();// 领周时长奖励
+     else if (i == 3){ 	 
+	 if (wktime.data.readTime >= wktimess && wktime.data.readTime <= 1250){
+              qqreadpick();// 领周时长奖励			  
+			  }    
     if (task.data && task.data.taskList[0].doneFlag == 0)
         qqreaddayread();// 阅读任务
           if (task.data.taskList[1].doneFlag == 0&&config.data && config.data.pageParams.todayReadSeconds / 60 >= 1)
@@ -654,7 +656,6 @@ function qqreadbox() {
     $.get(toqqreadboxurl, (error, response, data) => {
       if (logs) $.log(`${O}, 宝箱奖励: ${data}`);
       box = JSON.parse(data);
-      let box = JSON.parse(data);
       if (box.code==0){
         tz += `【宝箱奖励${box.data.count}】:获得${box.data.amount}金币\n`;	
 }
