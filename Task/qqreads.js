@@ -28,6 +28,7 @@ boxjs链接      https://raw.githubusercontent.com/ziye12/JavaScript/master/Task
 12.10 默认现金大于10且在23点提现10元，23点40后显示今日收益统计
 12.11 修复git与手机 时间不兼容问题
 12.30 增加提现开关，优化部分代码
+12.31 修复版本更新带来的判定问题
       
 
 ⚠️cookie获取方法：
@@ -255,7 +256,7 @@ if (!qqreadbdArr[0]) {
   qqreadbodyVal = qqreadbdArr[K];
   qqreadtimeurlVal = qqreadtimeurlArr[K];
   qqreadtimeheaderVal = qqreadtimehdArr[K];
-  O=(`${jsname+(K + 1)}🔔`);
+  O=(`${jsname+(K + 1)}🔔`);
   for (let i = 0; i < 13; i++) {
     (function (i) {
       setTimeout(
@@ -274,23 +275,23 @@ if (!qqreadbdArr[0]) {
 	 if (wktime.data.readTime >= wktimess && wktime.data.readTime <= 1250){
               qqreadpick();// 领周时长奖励			  
 			  }    
-    if (task.data && task.data.taskList[0].doneFlag == 0)
+    if (task.data && ljyd.doneFlag == 0)
         qqreaddayread();// 阅读任务
-          if (task.data.taskList[1].doneFlag == 0&&config.data && config.data.pageParams.todayReadSeconds / 60 >= 1)
+          if (ydrw.doneFlag == 0&&config.data && config.data.pageParams.todayReadSeconds / 60 >= 1)
               qqreadssr1();// 阅读金币1
-          if (task.data && task.data.taskList[2].doneFlag == 0) {
+          if (task.data && dk.doneFlag == 0) {
               qqreadsign(); // 金币签到
               qqreadtake(); // 阅豆签到
 }    
-          if (task.data && task.data.taskList[3].doneFlag == 0)
+          if (task.data && sp.doneFlag == 0)
               qqreadvideo();// 视频任务 
 }
      else if (i == 7 ){
        if (task.data && task.data.treasureBox.doneFlag == 0)
               qqreadbox();// 宝箱
-          if (task.data.taskList[1].doneFlag == 0&&config.data && config.data.pageParams.todayReadSeconds / 60 >= 30 )
+          if (ydrw.doneFlag == 0&&config.data && config.data.pageParams.todayReadSeconds / 60 >= 30 )
               qqreadssr2();// 阅读金币2
-          if (task.data && task.data.taskList[2].doneFlag == 0)
+          if (task.data && dk.doneFlag == 0)
               qqreadsign2();// 签到翻倍
 }    
      else if (i == 8&&CASH>=1&&task.data.user.amount >= CASH*10000&&nowTimes.getHours() ==23){     
@@ -303,7 +304,7 @@ if (!qqreadbdArr[0]) {
      else if (i == 11 ){   
           if (task.data && task.data.treasureBox.videoDoneFlag == 0)
               qqreadbox2();// 宝箱翻倍
-    if (task.data.taskList[1].doneFlag == 0&&config.data && config.data.pageParams.todayReadSeconds / 60 >= 30 )
+    if (ydrw.doneFlag == 0&&config.data && config.data.pageParams.todayReadSeconds / 60 >= 30 )
               qqreadssr3();// 阅读金币3
 }    
      else if (i == 12){  
@@ -359,24 +360,33 @@ function qqreadtask() {
     $.get(toqqreadtaskurl, (error, response, data) => {
       if (logs) $.log(`${O}, 任务列表: ${data}`);
       task = JSON.parse(data);
+   dk = task.data.taskList.find(item => item.type === 200);
+ ljyd = task.data.taskList.find(item => item.type === 210);
+ ydrw = task.data.taskList.find(item => item.type === 220);
+   sp = task.data.taskList.find(item => item.type === 230);
+
+if (task.data.invite.nextInviteConfig){
+tz +=
+        `【现金余额】:${(task.data.user.amount / 10000).toFixed(2)}元\n` +
+        `【第${task.data.invite.issue}期】:时间${task.data.invite.dayRange}\n` +
+        ` 已邀请${task.data.invite.inviteCount}人，再邀请${task.data.invite.nextInviteConfig.count}人获得${task.data.invite.nextInviteConfig.amount}金币\n` +
+        `【${dk.title}】:${dk.amount}金币,${dk.actionText}\n` +
+        `【${ljyd.title}】:${ljyd.amount}金币,${ljyd.actionText}\n` +
+        `【${ydrw.title}】:${ydrw.amount}金币,${ydrw.actionText}\n` +
+        `【${sp.title}】:${sp.amount}金币,${sp.actionText}\n` +
+        `【宝箱任务${task.data.treasureBox.count + 1}】:${
+          task.data.treasureBox.tipText
+        }\n` +
+        `【${task.data.fans.title}】:${task.data.fans.fansCount}个好友,${task.data.fans.todayAmount}金币\n`;
+}
+
       kz +=
           `【现金余额】:${(task.data.user.amount / 10000).toFixed(2)}元\n` +
           `【宝箱任务${task.data.treasureBox.count + 1}】:${
             task.data.treasureBox.timeInterval/1000
         }秒后领取\n` +
           `【已开宝箱】:${task.data.treasureBox.count}个\n`;
-      tz +=
-        `【现金余额】:${(task.data.user.amount / 10000).toFixed(2)}元\n` +
-        `【第${task.data.invite.issue}期】:时间${task.data.invite.dayRange}\n` +
-        ` 已邀请${task.data.invite.inviteCount}人，再邀请${task.data.invite.nextInviteConfig.count}人获得${task.data.invite.nextInviteConfig.amount}金币\n` +
-        `【${task.data.taskList[0].title}】:${task.data.taskList[0].amount}金币,${task.data.taskList[0].actionText}\n` +
-        `【${task.data.taskList[1].title}】:${task.data.taskList[1].amount}金币,${task.data.taskList[1].actionText}\n` +
-        `【${task.data.taskList[2].title}】:${task.data.taskList[2].amount}金币,${task.data.taskList[2].actionText}\n` +
-        `【${task.data.taskList[3].title}】:${task.data.taskList[3].amount}金币,${task.data.taskList[3].actionText}\n` +
-        `【宝箱任务${task.data.treasureBox.count + 1}】:${
-          task.data.treasureBox.tipText
-        }\n` +
-        `【${task.data.fans.title}】:${task.data.fans.fansCount}个好友,${task.data.fans.todayAmount}金币\n`;
+
       resolve();
     });
   });
