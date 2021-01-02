@@ -105,6 +105,7 @@ const nowTimes = new Date(
     8 * 60 * 60 * 1000
 );
 let wktime;
+let ydrw;
 
 const qqreadbdArr = [];
 let qqreadbodyVal = "";
@@ -246,7 +247,9 @@ console.log(
 );
 
 console.log(
-  `============ 共 ${qqreadbdArr.length} 个${jsname}账号：预计运行 ${qqreadbdArr.length * 13} 秒 =============\n`
+  `============ 共 ${qqreadbdArr.length} 个${jsname}账号：预计运行 ${
+    qqreadbdArr.length * 13
+  } 秒 =============\n`
 );
 
 console.log(`============ 提现标准为：${CASH} =============\n`);
@@ -294,6 +297,7 @@ function all() {
             }
             if (task.data && ljyd.doneFlag == 0) qqreaddayread(); // 阅读任务
             if (
+              ydrw &&
               ydrw.doneFlag == 0 &&
               config.data &&
               config.data.pageParams.todayReadSeconds / 60 >= 1
@@ -307,6 +311,7 @@ function all() {
           } else if (i == 7) {
             if (task.data && task.data.treasureBox.doneFlag == 0) qqreadbox(); // 宝箱
             if (
+              ydrw &&
               ydrw.doneFlag == 0 &&
               config.data &&
               config.data.pageParams.todayReadSeconds / 60 >= 30
@@ -326,6 +331,7 @@ function all() {
             if (task.data && task.data.treasureBox.videoDoneFlag == 0)
               qqreadbox2(); // 宝箱翻倍
             if (
+              ydrw &&
               ydrw.doneFlag == 0 &&
               config.data &&
               config.data.pageParams.todayReadSeconds / 60 >= 30
