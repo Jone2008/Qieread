@@ -1,6 +1,6 @@
 /*ziye
 ******************************************************************************
-固定ck版，可N个账号，无外部通知，BOX 设置为0 日常任务，设置为1 单开宝箱
+⚠️可N个账号，BOX 设置为0 日常任务，设置为1 单开宝箱，设置为2 完整功能  
 
 github地址     https://github.com/ziye12/JavaScript
 TG频道地址     https://t.me/ziyescript
@@ -16,6 +16,7 @@ boxjs链接      https://raw.githubusercontent.com/ziye12/JavaScript/master/Task
 12.28 增加 无通知时打印通知
 12.29 修复手机通知问题，增加外部推送开关
 1.1 修复签到问题
+1.2 增加完整功能 兼容固定ck与boxjs以及变量版 
 
 
 ⚠️cookie获取方法：
@@ -53,11 +54,19 @@ http-request https:\/\/mqqapi\.reader\.qq\.com\/mqq\/addReadTimeWithBid? script-
 
 */
 
-const BOX = 1;//设置为0 日常任务，设置为1 单开宝箱
+const BOX = 2;//设置为0 日常任务，设置为1 单开宝箱，设置为2 完整功能版
+const NODE=0;//如需固定ck，请设置为1，下载到本地使用
+
+
 
 const jsname = '企鹅读书'
 const $ = Env(jsname)
 let task ,tz, kz,config = '';
+let wktime;
+let ydrw;
+let dk;
+let ljyd;
+let sp;
 
 console.log(`\n========= 脚本执行时间(TM)：${new Date(new Date().getTime() + 0 * 60 * 60 * 1000).toLocaleString('zh', {hour12: false})} =========\n`)
 const notify = $.isNode() ? require("./sendNotify") : "";
@@ -66,26 +75,184 @@ const notifyInterval = 2;// 0为关闭通知，1为所有通知，2为12 23 点�
 const logs = 0;   //0为关闭日志，1为开启
 const maxtime = 10//每日上传时长限制，默认20小时
 const wktimess = 1200//周奖励领取标准，默认1200分钟
-const CASH = 0;//提现金额 可设置0 1 2 10 30 50 100  设置0关闭
+let CASH = 0
 
 
-//在``里面填写，多账号换行
+//⚠️固定ck则在``里面填写ck，多账号换行
 let qqreadbodyVal=``
 let qqreadtimeurlVal=``
 let qqreadtimeheaderVal=``
 
-let QQ_READ_COOKIES = {  
+
+
+const qqreadbdArr = [];
+const qqreadtimeurlArr = [];
+const qqreadtimehdArr = [];
+let qqreadBD = [];
+let qqreadtimeURL = [];
+let qqreadtimeHD = [];
+
+const nowTimes = new Date(
+  new Date().getTime() +
+    new Date().getTimezoneOffset() * 60 * 1000 +
+    8 * 60 * 60 * 1000
+);
+
+if ($.isNode()&&
+process.env.QQREAD_BODY) {
+  // 没有设置 QQREAD_CASH 则默认为 0 不提现
+  CASH = process.env.QQREAD_CASH || 0;
+
+  // 自定义多 cookie 之间连接的分隔符，默认为 \n 换行分割，不熟悉的不要改动和配置，为了兼容本地 node 执行
+  COOKIES_SPLIT = process.env.COOKIES_SPLIT || "\n";
+
+  console.log(
+    `============ cookies分隔符为：${JSON.stringify(
+      COOKIES_SPLIT
+    )} =============\n`
+  );
+  if (
+    process.env.QQREAD_BODY &&
+    process.env.QQREAD_BODY.indexOf(COOKIES_SPLIT) > -1
+  ) {
+    qqreadBD = process.env.QQREAD_BODY.split(COOKIES_SPLIT);
+  } else {
+    qqreadBD = process.env.QQREAD_BODY.split();
+  }
+
+  if (
+    process.env.QQREAD_TIMEURL &&
+    process.env.QQREAD_TIMEURL.indexOf(COOKIES_SPLIT) > -1
+  ) {
+    qqreadtimeURL = process.env.QQREAD_TIMEURL.split(COOKIES_SPLIT);
+  } else {
+    qqreadtimeURL = process.env.QQREAD_TIMEURL.split();
+  }
+
+  if (
+    process.env.QQREAD_TIMEHD &&
+    process.env.QQREAD_TIMEHD.indexOf(COOKIES_SPLIT) > -1
+  ) {
+    qqreadtimeHD = process.env.QQREAD_TIMEHD.split(COOKIES_SPLIT);
+  } else {
+    qqreadtimeHD = process.env.QQREAD_TIMEHD.split();
+  }
+}
+
+if (NODE==1){
+ QQ_READ_COOKIES = {  
   "qqreadbodyVal": qqreadbodyVal.split('\n'),
   "qqreadtimeurlVal": qqreadtimeurlVal.split('\n'),
 "qqreadtimeheaderVal":qqreadtimeheaderVal.split('\n') 
 }
 
+Length = QQ_READ_COOKIES.qqreadbodyVal.length
+  } 
+  
+  
+if (NODE!=1){
+
+if ($.isNode()) {
+  Object.keys(qqreadBD).forEach((item) => {
+    if (qqreadBD[item]) {
+      qqreadbdArr.push(qqreadBD[item]);
+    }
+  });
+  Object.keys(qqreadtimeURL).forEach((item) => {
+    if (qqreadtimeURL[item]) {
+      qqreadtimeurlArr.push(qqreadtimeURL[item]);
+    }
+  });
+  Object.keys(qqreadtimeHD).forEach((item) => {
+    if (qqreadtimeHD[item]) {
+      qqreadtimehdArr.push(qqreadtimeHD[item]);
+    }
+  });
+} else {
+  qqreadbdArr.push($.getdata("qqreadbd"));
+  qqreadtimeurlArr.push($.getdata("qqreadtimeurl"));
+  qqreadtimehdArr.push($.getdata("qqreadtimehd"));
+  // 根据boxjs中设置的额外账号数，添加存在的账号数据进行任务处理
+  if ("qeCASH") {
+    CASH = $.getval("qeCASH");
+  }  
+  const qeCount = ($.getval("qeCount") || "1") - 0;
+  for (let i = 2; i <= qeCount; i++) {
+    if ($.getdata(`qqreadbd${i}`)) {
+      qqreadbdArr.push($.getdata(`qqreadbd${i}`));
+      qqreadtimeurlArr.push($.getdata(`qqreadtimeurl${i}`));
+      qqreadtimehdArr.push($.getdata(`qqreadtimehd${i}`));
+    }
+  }
+}
+Length = qqreadbdArr.length
+ }
+
+if ($.isNode()) {
+  daytime =
+    new Date(new Date().toLocaleDateString()).getTime() - 8 * 60 * 60 * 1000;
+} else {
+  daytime = new Date(new Date().toLocaleDateString()).getTime();
+}
+
+if ((isGetCookie = typeof $request !== "undefined")) {
+  GetCookie();
+  $.done();
+}
+
+function GetCookie() {
+  if ($request && $request.url.indexOf("addReadTimeWithBid?") >= 0) {
+    const qqreadtimeurlVal = $request.url;
+    if (qqreadtimeurlVal) $.setdata(qqreadtimeurlVal, `qqreadtimeurl${$.idx}`);
+    $.log(
+      `[${
+        jsname + $.idx
+      }] 获取时长url: 成功,qqreadtimeurlVal: ${qqreadtimeurlVal}`
+    );
+    $.msg(jsname + $.idx, `获取时长url: 成功🎉`, ``);
+    const qqreadtimeheaderVal = JSON.stringify($request.headers);
+    if (qqreadtimeheaderVal)
+      $.setdata(qqreadtimeheaderVal, `qqreadtimehd${$.idx}`);
+    $.log(
+      `[${
+        jsname + $.idx
+      }] 获取时长header: 成功,qqreadtimeheaderVal: ${qqreadtimeheaderVal}`
+    );
+    $.msg(jsname + $.idx, `获取时长header: 成功🎉`, ``);
+  } else if (
+    $request &&
+    $request.body.indexOf("bookDetail_bottomBar_read_C") >= 0 &&
+    $request.body.indexOf("bookRead_show_I") >= 0 &&
+    $request.body.indexOf("topBar_left_back_C") < 0 &&
+    $request.body.indexOf("bookRead_dropOut_shelfYes_C") < 0
+  ) {
+    const qqreadbodyVal = $request.body;
+    if (qqreadbodyVal) $.setdata(qqreadbodyVal, `qqreadbd${$.idx}`);
+    $.log(
+      `[${jsname + $.idx}] 获取更新body: 成功,qqreadbodyVal: ${qqreadbodyVal}`
+    );
+    $.msg(jsname + $.idx, `获取更新body: 成功🎉`, ``);
+  }
+}
+
+console.log(
+  `================== 脚本执行 - 北京时间(UTC+8)：${new Date(
+    new Date().getTime() +
+      new Date().getTimezoneOffset() * 60 * 1000 +
+      8 * 60 * 60 * 1000
+  ).toLocaleString()} =====================\n`
+);
+
+console.log(
+  `============ 共 ${Length} 个${jsname}账号=============\n`
+);
+
+console.log(`============ 提现标准为：${CASH} =============\n`);
 
 
 !(async () => {
 
   await all();
-  
   
 })()
     .catch((e) => {
@@ -94,19 +261,32 @@ let QQ_READ_COOKIES = {
     .finally(() => {
       $.done();
     })
-
-
-
-async function all() {
-  console.log(`==========🔔共${QQ_READ_COOKIES.qqreadbodyVal.length}个${jsname}账号🔔=========\n`);
-  for (let i = 0; i < QQ_READ_COOKIES.qqreadbodyVal.length; i++) {	  
-	  nowTimes = new Date(new Date().getTime() + new Date().getTimezoneOffset()*60*1000 + 8*60*60*1000);  
-    daytime= new Date(new Date().toLocaleDateString()).getTime()- 8 * 60 * 60 * 1000; 
 	
-    qqreadbodyVal = QQ_READ_COOKIES.qqreadbodyVal[i];
-	qqreadtimeurlVal = QQ_READ_COOKIES.qqreadtimeurlVal[i];   
-    qqreadtimeheaderVal = QQ_READ_COOKIES.qqreadtimeheaderVal[i];    
-    O=(`${jsname+(i + 1)}🔔`);
+async function all() {
+	
+	if (!Length) {
+    $.msg(
+      jsname,
+      "⚠️提示：您还未获取cookie,请点击前往获取cookie\n",
+      "https://m.q.qq.com/a/s/d3eacc70120b9a37e46bad408c0c4c2a",
+      { "open-url": "https://m.q.qq.com/a/s/d3eacc70120b9a37e46bad408c0c4c2a" }
+    );
+    $.done();
+  }
+  
+  for (let i = 0; i < Length; i++) {
+if (NODE==1){
+   qqreadbodyVal = QQ_READ_COOKIES.qqreadbodyVal[i];
+   qqreadtimeurlVal = QQ_READ_COOKIES.qqreadtimeurlVal[i];   
+   qqreadtimeheaderVal = QQ_READ_COOKIES.qqreadtimeheaderVal[i];    
+	  }
+	if (NODE!=1){ 
+   qqreadbodyVal = qqreadbdArr[i];
+  qqreadtimeurlVal = qqreadtimeurlArr[i];
+  qqreadtimeheaderVal = qqreadtimehdArr[i];
+
+}	  
+    O=(`${jsname+(i + 1)}🔔`);
     tz= '';
 	kz= '';	
 	if (BOX == 0){
@@ -115,10 +295,10 @@ async function all() {
     await qqreadtrack();//更新
 	await qqreadconfig();//时长查询
 	await qqreadwktime();//周时长查询
-	if (config.data.pageParams.todayReadSeconds / 3600 <= maxtime) {
+	if (config.data&&config.data.pageParams.todayReadSeconds / 3600 <= maxtime) {
     await qqreadtime();// 上传时长
     }
-	if (wktime.data.readTime >= wktimess && wktime.data.readTime <= 1250) {
+	if (wktime.data&&wktime.data.readTime >= wktimess && wktime.data.readTime <= 1250) {
 	await qqreadpick();//领周时长奖励
 	}	
     await qqreadtask();//任务列表
@@ -140,7 +320,7 @@ async function all() {
     }
     if (nowTimes.getHours() >=23  && (nowTimes.getMinutes() >= 0 && nowTimes.getMinutes() <= 59)) 
     {
-    if (CASH>=1&&task.data.user.amount >= CASH*10000) {
+    if (CASH>=1&&task.data&&task.data.user.amount >= CASH*10000) {
       await qqreadwithdraw();//提现
       }		
       await qqreadtrans();//今日收益累计
@@ -150,6 +330,7 @@ async function all() {
     if (task.data && sp.doneFlag == 0) {
       await qqreadvideo();//视频奖励
     }
+	
      }
  
 
@@ -172,6 +353,59 @@ async function all() {
       await qqreadbox2();//宝箱翻倍
 	  }	
 	}
+	
+	if (BOX == 2){
+	
+	await qqreadinfo();//用户名
+    await qqreadtrack();//更新
+	await qqreadconfig();//时长查询
+	await qqreadwktime();//周时长查询
+	if (config.data&&config.data.pageParams.todayReadSeconds / 3600 <= maxtime) {
+    await qqreadtime();// 上传时长
+    }
+	if (wktime.data&&wktime.data.readTime >= wktimess && wktime.data.readTime <= 1250) {
+	await qqreadpick();//领周时长奖励
+	}	
+    await qqreadtask();//任务列表
+    if (task.data && ljyd.doneFlag == 0) {
+    await qqreaddayread();//阅读任务
+     }	 	 
+    if (ydrw.doneFlag == 0&&config.data && config.data.pageParams.todayReadSeconds / 60 >= 1 ) {     
+      await qqreadssr1();//阅读金币1	  
+    }
+	if (task.data && dk.doneFlag == 0) {
+      await qqreadsign();//金币签到
+      await qqreadtake();//阅豆签到
+    }
+	if (task.data&&task.data.treasureBox.timeInterval<=10000) {
+      await $.wait(task.data.treasureBox.timeInterval)
+      await qqreadbox();//宝箱
+    }
+    await $.wait(4000)
+    if (task.data&&task.data.treasureBox.timeInterval-600000<=10000) {
+      await $.wait(task.data.treasureBox.timeInterval-600000)
+      await qqreadbox2();//宝箱翻倍
+	  }		
+	if (ydrw.doneFlag == 0&&config.data && config.data.pageParams.todayReadSeconds / 60 >= 30 ) {
+      await qqreadssr2();//阅读金币2
+	  await $.wait(4000);
+	  await qqreadssr3();//阅读金币3
+    }
+    if (nowTimes.getHours() >=23  && (nowTimes.getMinutes() >= 0 && nowTimes.getMinutes() <= 59)) 
+    {
+    if (CASH>=1&&task.data&&task.data.user.amount >= CASH*10000) {
+      await qqreadwithdraw();//提现
+      }		
+      await qqreadtrans();//今日收益累计
+    }	
+    if (task.data && dk.doneFlag == 0) {
+      await qqreadsign2();}//签到翻倍    	
+    if (task.data && sp.doneFlag == 0) {
+      await qqreadvideo();//视频奖励
+    }
+	
+	}
+	
       await showmsg();//通知	
       
   }
@@ -180,7 +414,7 @@ async function all() {
 
 function showmsg() {
   return new Promise(async resolve => {
-    if (BOX==0){
+    if (BOX!=1){
 if (notifyInterval!=1){
 console.log(O+'\n'+tz);
 }
@@ -285,8 +519,8 @@ tz +=
         `【${ydrw.title}】:${ydrw.amount}金币,${ydrw.actionText}\n` +
         `【${sp.title}】:${sp.amount}金币,${sp.actionText}\n` +
         `【宝箱任务${task.data.treasureBox.count + 1}】:${
-          task.data.treasureBox.tipText
-        }\n` +
+            task.data.treasureBox.timeInterval/1000
+        }秒后领取\n` +
         `【${task.data.fans.title}】:${task.data.fans.fansCount}个好友,${task.data.fans.todayAmount}金币\n`;
 }
 
@@ -514,7 +748,7 @@ function qqreadbox() {
     $.get(toqqreadboxurl, (error, response, data) => {
       if (logs) $.log(`${O}, 宝箱奖励: ${data}`);
       let box = JSON.parse(data);
-      if (box.code==0){
+      if (box.code==0&&box.data.amount){
         tz += `【宝箱奖励${box.data.count}】:获得${box.data.amount}金币\n`;
 		kz += `【宝箱奖励${box.data.count}】:获得${box.data.amount}金币\n`;
 }
@@ -535,7 +769,7 @@ function qqreadbox2() {
     $.get(toqqreadbox2url, (error, response, data) => {
       if (logs) $.log(`${O}, 宝箱奖励翻倍: ${data}`);
       let box2 = JSON.parse(data);
-      if (box2.code == 0) {
+      if (box2.code == 0&&box2.data.amount) {
         tz += `【宝箱翻倍】:获得${box2.data.amount}金币\n`;
 		kz += `【宝箱翻倍】:获得${box2.data.amount}金币\n`;
       }
