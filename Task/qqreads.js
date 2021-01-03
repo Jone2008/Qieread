@@ -457,20 +457,26 @@ function qqreadtrans() {
 // 更新
 function qqreadtrack() {
   return new Promise((resolve, reject) => {
-    const body = qqreadbodyVal.replace(
-      new RegExp(/"dis":[0-9]{13}/),
-      `"dis":${new Date().getTime()}`
-    );
+    const body = qqreadbodyVal.replace(new RegExp(/"dis":[0-9]{13}/), `"dis":${new Date().getTime()}`)
     const toqqreadtrackurl = {
       url: "https://mqqapi.reader.qq.com/log/v4/mqq/track",
       headers: JSON.parse(qqreadtimeheaderVal),
-      body,
+      body: body,
       timeout: 60000,
     };
     $.post(toqqreadtrackurl, (error, response, data) => {
       if (logs) $.log(`${O}, 更新: ${data}`);
-      track = JSON.parse(data);
-      tz += `【数据更新】:更新${track.msg}\n`;
+      let track = JSON.parse(data);
+var date = new Date(JSON.parse(qqreadbodyVal).dataList[0].dis);
+Y = date.getFullYear() + '-';
+M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+D = date.getDate() + ' ';
+h = date.getHours() + ':';
+m = date.getMinutes() + ':';
+s = date.getSeconds();
+time=Y+M+D+h+m+s;
+      tz += `【数据更新】:更新${track.msg},\n【cookie获取时间】${time}\n`;
+      kz += `【数据更新】:更新${track.msg},\n【cookie获取时间】${time}\n`;
       resolve();
     });
   });
