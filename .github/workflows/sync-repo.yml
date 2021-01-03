@@ -1,5 +1,5 @@
 # File: .github/workflows/repo-sync.yml
-name: sync-ziye12-JavaScript
+name: sync-Jone2008-Qieread
 on:
   schedule:
     - cron: '1 */3 * * *'
