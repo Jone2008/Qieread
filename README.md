@@ -1,7 +1,9 @@
 <p align="center"><img alt="Water's github stats" src="https://github-readme-stats.vercel.app/api?username=Water008&show_icons=true&hide_border=true" /></p>
 
+1.3同步更新ziye12脚本，修复cookie失效继续阅读任务，实测也可以Actions运行，不过还是建议云函数运行。
+
 12.30同步ziye12更新脚本，请务必添加新Secrets，name为QQREAD_CASH,值：可设置0 1 2 10 30 50 100 ，设置0即为默认不提现
-同时workflow下的yml文件增加env：QQREAD_CASH: ${{ secrets.QQREAD_CASH }}即可自动提现，不增加默认不提现
+同时Workflow下的yml文件增加env：QQREAD_CASH: ${{ secrets.QQREAD_CASH }}即可自动提现，不增加默认不提现
 
 12.09凌晨经验证均已解决1金币问题
 
