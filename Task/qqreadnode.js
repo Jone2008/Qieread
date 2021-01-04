@@ -18,6 +18,8 @@ boxjs链接      https://raw.githubusercontent.com/ziye12/JavaScript/master/Task
 1.1 修复签到问题
 1.2 增加完整功能 兼容固定ck与boxjs以及变量版 
 1.3 增加ck失效提醒，并继续执行其他账号
+1.3 增加一个独立的cookie文件
+1.3 增加cookie获取时间显示
 
 ⚠️cookie获取方法：
 
@@ -55,7 +57,7 @@ http-request https:\/\/mqqapi\.reader\.qq\.com\/mqq\/addReadTimeWithBid? script-
 */
 
 const BOX = 2;//设置为0 日常任务，设置为1 单开宝箱，设置为2 完整功能版
-const NODE = 0;//如需固定ck，请设置为1，下载到本地使用
+
 
 
 
@@ -68,10 +70,10 @@ let dk;
 let ljyd;
 let sp;
 
-
+const COOKIE = $.isNode() ? require("./qqreadCOOKIE") : "";
 const notify = $.isNode() ? require("./sendNotify") : "";
-const notifyttt = 0// 0为关闭外部推送，1为12 23 点外部推送
-const notifyInterval = 1;// 0为关闭通知，1为所有通知，2为12 23 点通知  ， 3为 6 12 18 23 点通知 
+const notifyttt = 1// 0为关闭外部推送，1为12 23 点外部推送
+const notifyInterval = 2;// 0为关闭通知，1为所有通知，2为12 23 点通知  ， 3为 6 12 18 23 点通知 
 const logs = 0;   //0为关闭日志，1为开启
 const maxtime = 10//每日上传时长限制，默认20小时
 const wktimess = 1200//周奖励领取标准，默认1200分钟
@@ -80,13 +82,8 @@ let CASH = 0;
 
 //⚠️固定ck则在``里面填写ck，多账号换行
 let qqreadbodyVal = ``;
-
 let qqreadtimeurlVal = ``;
-
 let qqreadtimeheaderVal = ``;
-
-
-
 const qqreadbdArr = [];
 const qqreadtimeurlArr = [];
 const qqreadtimehdArr = [];
@@ -141,18 +138,18 @@ if ($.isNode() &&
   }
 }
 
-if (NODE == 1) {
+if (COOKIE.qqreadbodyVal) {
   QQ_READ_COOKIES = {
-    "qqreadbodyVal": qqreadbodyVal.split('\n'),
-    "qqreadtimeurlVal": qqreadtimeurlVal.split('\n'),
-    "qqreadtimeheaderVal": qqreadtimeheaderVal.split('\n')
+    "qqreadbodyVal": COOKIE.qqreadbodyVal.split('\n'),
+    "qqreadtimeurlVal": COOKIE.qqreadtimeurlVal.split('\n'),
+    "qqreadtimeheaderVal": COOKIE.qqreadtimeheaderVal.split('\n')
   }
 
   Length = QQ_READ_COOKIES.qqreadbodyVal.length;
 }
 
 
-if (NODE != 1) {
+if (!COOKIE.qqreadbodyVal) {
 
   if ($.isNode()) {
     Object.keys(qqreadBD).forEach((item) => {
@@ -275,12 +272,12 @@ async function all() {
   }
 
   for (let i = 0; i < Length; i++) {
-    if (NODE == 1) {
+    if (COOKIE.qqreadbodyVal) {
       qqreadbodyVal = QQ_READ_COOKIES.qqreadbodyVal[i];
       qqreadtimeurlVal = QQ_READ_COOKIES.qqreadtimeurlVal[i];
       qqreadtimeheaderVal = QQ_READ_COOKIES.qqreadtimeheaderVal[i];
     }
-    if (NODE != 1) {
+    if (!COOKIE.qqreadbodyVal) {
       qqreadbodyVal = qqreadbdArr[i];
       qqreadtimeurlVal = qqreadtimeurlArr[i];
       qqreadtimeheaderVal = qqreadtimehdArr[i];
@@ -469,8 +466,16 @@ function qqreadtrack() {
     $.post(toqqreadtrackurl, (error, response, data) => {
       if (logs) $.log(`${O}, 更新: ${data}`);
       let track = JSON.parse(data);
-      tz += `【数据更新】:更新${track.msg}\n`;
-      kz += `【数据更新】:更新${track.msg}\n`;
+var date = new Date(JSON.parse(qqreadbodyVal).dataList[0].dis);
+Y = date.getFullYear() + '-';
+M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+D = date.getDate() + ' ';
+h = date.getHours() + ':';
+m = date.getMinutes() + ':';
+s = date.getSeconds();
+time=Y+M+D+h+m+s;
+      tz += `【数据更新】:更新${track.msg},\n【cookie获取时间】${time}\n`;
+      kz += `【数据更新】:更新${track.msg},\n【cookie获取时间】${time}\n`;
       resolve();
     });
   });
