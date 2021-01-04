@@ -4,7 +4,7 @@ github地址     https://github.com/ziye12/JavaScript
 TG频道地址     https://t.me/ziyescript
 TG交流群       https://t.me/joinchat/AAAAAE7XHm-q1-7Np-tF3g
 boxjs链接      https://raw.githubusercontent.com/ziye12/JavaScript/master/Task/ziye.boxjs.json
-固定ck版链接      https://raw.githubusercontent.com/ziye12/JavaScript/master/Task/qqreadnode.js
+另一完整版链接      https://raw.githubusercontent.com/ziye12/JavaScript/master/Task/qqreadnode.js
 打印ck链接      https://raw.githubusercontent.com/ziye12/JavaScript/master/Task/qqreadck.js
 
 
@@ -29,6 +29,7 @@ boxjs链接      https://raw.githubusercontent.com/ziye12/JavaScript/master/Task
 12.11 修复git与手机 时间不兼容问题
 12.30 增加提现开关，优化部分代码
 12.31 修复版本更新带来的判定问题
+1.4 增加ck失效提醒，ck获取时间显示，今日收益，
 
 
 ⚠️cookie获取方法：
@@ -191,17 +192,8 @@ if ($.isNode()) {
   }
 }
 
-if ($.isNode()) {
-  daytime =
-    new Date(new Date().toLocaleDateString()).getTime() - 8 * 60 * 60 * 1000;
-} else {
-  daytime = new Date(new Date().toLocaleDateString()).getTime();
-}
-
-if ((isGetCookie = typeof $request !== "undefined")) {
-  GetCookie();
-  $.done();
-}
+// 今日0点时间戳
+const daytime = new Date(nowTimes.toLocaleDateString()).getTime();
 
 function GetCookie() {
   if ($request && $request.url.indexOf("addReadTimeWithBid?") >= 0) {
@@ -325,8 +317,10 @@ function all() {
             nowTimes.getHours() == 23
           ) {
             qqreadwithdraw(); // 现金提现
-          } else if (i == 9 && nowTimes.getHours() == 23) {
-            qqreadtrans(); // 今日收益累计
+          } else if (i == 9&&
+            obj.data
+          ) {
+            getAmounts(); // 今日收益累计
           } else if (i == 11) {
             if (task.data && task.data.treasureBox.videoDoneFlag == 0)
               qqreadbox2(); // 宝箱翻倍
@@ -431,28 +425,47 @@ function qqreadtask() {
     });
   });
 }
-// 金币统计
-function qqreadtrans() {
-  return new Promise((resolve, reject) => {
-    for (let y = 1; y < 9; y++) {
-      let day = 0;
-      const toqqreadtransurl = {
-        url: `https://mqqapi.reader.qq.com/mqq/red_packet/user/trans/list?pn=${y}`,
-        headers: JSON.parse(qqreadtimeheaderVal),
-        timeout: 60000,
-      };
-      $.get(toqqreadtransurl, (error, response, data) => {
-        if (logs) $.log(`${O}, 今日收益: ${data}`);
-        trans = JSON.parse(data);
-        for (let i = 0; i < 20; i++) {
-          if (trans.data.list[i].createTime >= daytime)
-            day += trans.data.list[i].amount;
-        }
-        tz += `【今日收益】:获得${day}\n`;
-        resolve();
-      });
+// 统计金币
+async function getAmounts() {
+  let page = 1
+  let amounts = 0
+  while (true) {
+    const { total, isEnd } = await getTodayAmount(page)
+    amounts += total
+    if (isEnd) {
+      break
+    } else {
+      page++
+      await $.wait(200)
     }
-  });
+  }
+  if (logs) $.log(`${O}, 今日收益: ${amounts}金币,约${(amounts / 10000.0).toFixed(2)}元.`);
+  tz += `【今日收益】:获得${amounts}金币,约${(amounts / 10000.0).toFixed(2)}元.\n`
+  kz += `【今日收益】:获得${amounts}金币,约${(amounts / 10000.0).toFixed(2)}元.\n`
+}
+
+function getTodayAmount(page = 1) {
+  return new Promise((r, j) => {
+    const options = {
+      url: "https://mqqapi.reader.qq.com/mqq/red_packet/user/trans/list?pn=" + page,
+      headers: JSON.parse(qqreadtimeheaderVal),
+      timeout: 60000,
+    }
+    $.get(options, (error, response, data) => {
+      const obj = JSON.parse(data)
+      let isEnd = obj.data.list.length == 0
+      let total = 0
+      for (let index = 0; index < obj.data.list.length; index++) {
+        const element = obj.data.list[index];
+        if (element.createTime < daytime){
+          isEnd = true
+          break
+        }
+        total += element.amount
+      }
+      r({ total, isEnd })
+    })
+  })
 }
 // 更新
 function qqreadtrack() {
