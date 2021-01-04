@@ -29,7 +29,7 @@ boxjs链接      https://raw.githubusercontent.com/ziye12/JavaScript/master/Task
 12.11 修复git与手机 时间不兼容问题
 12.30 增加提现开关，优化部分代码
 12.31 修复版本更新带来的判定问题
-1.4 增加ck失效提醒，ck获取时间显示，今日收益，
+1.4 增加ck失效提醒，ck获取时间显示，6点后今日收益显示，
 
 
 ⚠️cookie获取方法：
@@ -92,6 +92,8 @@ let CASH = "";
 let config = "";
 let K = 0;
 let COOKIES_SPLIT = "";
+let dk,sp,ljyd,ydrw,wktime;
+
 
 const logs = 0; // 0为关闭日志，1为开启
 const notifyInterval = 3;
@@ -105,8 +107,8 @@ const nowTimes = new Date(
     new Date().getTimezoneOffset() * 60 * 1000 +
     8 * 60 * 60 * 1000
 );
-let wktime;
-let ydrw;
+
+
 
 const qqreadbdArr = [];
 let qqreadbodyVal = "";
@@ -193,7 +195,13 @@ if ($.isNode()) {
 }
 
 // 今日0点时间戳
-const daytime = new Date(nowTimes.toLocaleDateString()).getTime();
+if ($.isNode()) {
+  daytime =
+    new Date(new Date().toLocaleDateString()).getTime() - 8 * 60 * 60 * 1000;
+} else {
+  daytime = new Date(new Date().toLocaleDateString()).getTime();
+}
+
 
 function GetCookie() {
   if ($request && $request.url.indexOf("addReadTimeWithBid?") >= 0) {
@@ -317,8 +325,8 @@ function all() {
             nowTimes.getHours() == 23
           ) {
             qqreadwithdraw(); // 现金提现
-          } else if (i == 9&&
-            obj.data
+          } else if (i == 9 &&
+            nowTimes.getHours() >= 6
           ) {
             getAmounts(); // 今日收益累计
           } else if (i == 11) {
