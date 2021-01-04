@@ -1,5 +1,7 @@
 <p align="center"><img alt="Water's github stats" src="https://github-readme-stats.vercel.app/api?username=Water008&show_icons=true&hide_border=true" /></p>
 
+1.5  qqreads.js修复获取cookies问题，qqreadnode修复QQREAD_CASH环境变量问题
+
 1.4增加本仓库自动同步功能 只需设置secrets名：  PAT   
 此处PAT需要申请，教程详见：https://www.jianshu.com/p/bb82b3ad1d11
 
