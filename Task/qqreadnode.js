@@ -2,11 +2,14 @@
 ******************************************************************************
 ⚠️可N个账号，BOX 设置为0 日常任务，设置为1 单开宝箱，设置为2 完整功能  
 
+⚠️云函数固定ck则在 qqreadCOOKIE 文件里面填写ck，多账号换行
+
+qqreadCOOKIE地址 https://raw.githubusercontent.com/ziye12/JavaScript/master/Task/qqreadCOOKIE.js
 github地址     https://github.com/ziye12/JavaScript
 TG频道地址     https://t.me/ziyescript
 TG交流群       https://t.me/joinchat/AAAAAE7XHm-q1-7Np-tF3g
 boxjs链接      https://raw.githubusercontent.com/ziye12/JavaScript/master/Task/ziye.boxjs.json
-完整版         https://raw.githubusercontent.com/ziye12/JavaScript/master/Task/qqreads.js
+另一版         https://raw.githubusercontent.com/ziye12/JavaScript/master/Task/qqreads.js
 
 本人github地址     https://github.com/ziye12/JavaScript 
 转载请备注个名字，谢谢
@@ -79,8 +82,6 @@ const maxtime = 10//每日上传时长限制，默认20小时
 const wktimess = 1200//周奖励领取标准，默认1200分钟
 let CASH = 0;
 
-
-//⚠️固定ck则在``里面填写ck，多账号换行
 let qqreadbodyVal = ``;
 let qqreadtimeurlVal = ``;
 let qqreadtimeheaderVal = ``;
