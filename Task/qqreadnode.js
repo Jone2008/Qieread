@@ -68,12 +68,7 @@ const BOX = 2;//设置为0 日常任务，设置为1 单开宝箱，设置为2 �
 const jsname = '企鹅读书'
 const $ = Env(jsname)
 let task, tz, kz, config = '';
-let wktime;
-let ydrw;
-let dk;
-let ljyd;
-let sp;
-let obj;
+let dk,sp,ljyd,ydrw,wktime;
 
 const COOKIE = $.isNode() ? require("./qqreadCOOKIE") : "";
 const notify = $.isNode() ? require("./sendNotify") : "";
@@ -100,7 +95,13 @@ const nowTimes = new Date(
   8 * 60 * 60 * 1000
 );
 // 今日0点时间戳
-const daytime = new Date(nowTimes.toLocaleDateString()).getTime();
+if ($.isNode()) {
+  daytime =
+    new Date(new Date().toLocaleDateString()).getTime() - 8 * 60 * 60 * 1000;
+} else {
+  daytime = new Date(new Date().toLocaleDateString()).getTime();
+}
+
 
 if ($.isNode() &&
   process.env.QQREAD_BODY) {
@@ -320,7 +321,7 @@ async function all() {
           await qqreadwithdraw();//提现
         }
       }
-      if (obj.data &&nowTimes.getHours() >= 6) {    
+      if (nowTimes.getHours() >= 6) {    
       await getAmounts();//今日收益累计
 	  }  
       if (task.data && dk.doneFlag == 0) {
@@ -392,7 +393,7 @@ async function all() {
           await qqreadwithdraw();//提现
         }
       }
-      if (obj.data &&nowTimes.getHours() >= 6) {    
+      if (nowTimes.getHours() >= 6) {    
       await getAmounts();//今日收益累计
 	  }    
       if (task.data && dk.doneFlag == 0) {
@@ -897,7 +898,7 @@ async function getAmounts() {
       await $.wait(200)
     }
   }
-  if (logs) $.log(`${$.name}, 今日收益: ${amounts}金币,约${(amounts / 10000.0).toFixed(2)}元.`);
+  if (logs) $.log(`${O}, 今日收益: ${amounts}金币,约${(amounts / 10000.0).toFixed(2)}元.`);
   tz += `【今日收益】:获得${amounts}金币,约${(amounts / 10000.0).toFixed(2)}元.\n`
   kz += `【今日收益】:获得${amounts}金币,约${(amounts / 10000.0).toFixed(2)}元.\n`
 }
