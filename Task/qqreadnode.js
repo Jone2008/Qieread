@@ -24,7 +24,7 @@ boxjs链接      https://raw.githubusercontent.com/ziye12/JavaScript/master/Task
 1.3 增加一个独立的cookie文件
 1.3 增加cookie获取时间显示
 1.4 单开宝箱不再ck失效提示，增加6点后显示今日收益
-1.4 修复QQREAD_CASH环境变量问题
+1.5 调整宝箱策略，20分钟运行一次就行
 
 ⚠️cookie获取方法：
 
@@ -379,10 +379,7 @@ async function all() {
       if (task.data && task.data.treasureBox.timeInterval <= 10000) {
         await $.wait(task.data.treasureBox.timeInterval)
         await qqreadbox();//宝箱
-      }
-      await $.wait(4000)
-      if (task.data && task.data.treasureBox.timeInterval - 600000 <= 10000) {
-        await $.wait(task.data.treasureBox.timeInterval - 600000)
+        await $.wait(4000)
         await qqreadbox2();//宝箱翻倍
       }
       if (ydrw.doneFlag == 0 && config.data && config.data.pageParams.todayReadSeconds / 60 >= 30) {
