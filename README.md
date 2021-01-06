@@ -1,5 +1,12 @@
 <p align="center"><img alt="Water's github stats" src="https://github-readme-stats.vercel.app/api?username=Water008&show_icons=true&hide_border=true" /></p>
 
+1.6 因作者删库停止更新，此库也停更。仅供留以后参考研究学习用。
+
+1.5  qqreads.js修复获取cookies问题，qqreadnode修复QQREAD_CASH环境变量问题
+
+1.4增加本仓库自动同步功能 只需设置secrets名：  PAT   
+此处PAT需要申请，教程详见：https://www.jianshu.com/p/bb82b3ad1d11
+
 1.3同步更新ziye12脚本，修复cookie失效继续阅读任务，实测也可以Actions运行，不过还是建议云函数运行。
 
 12.30同步ziye12更新脚本，请务必添加新Secrets，name为QQREAD_CASH,值：可设置0 1 2 10 30 50 100 ，设置0即为默认不提现
