@@ -37,7 +37,7 @@ jobs:
           npm install
       - name: '运行 【企鹅阅读】'
         run: |
-          node Task/qqread.js
+          node Task/qqreads.js
         env:
           JD_COOKIE: ${{ secrets.JD_COOKIE }}
           WATCH_ACCEPTBODY: ${{ secrets.WATCH_ACCEPTBODY }}
