@@ -9,7 +9,6 @@ on:
      - cron: '*/5 * * * *'
   watch:
     types: started
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -33,9 +32,8 @@ jobs:
       - name: '运行 【企鹅读书2】'
         if: env.QQREAD_TIMEHD
         run: |
-          node Task/qqreads.js
-        env:
-          
+          node Task/qqreadnode.js
+        env:          
           PUSH_KEY: ${{ secrets.PUSH_KEY }}
           BARK_PUSH: ${{ secrets.BARK_PUSH }}
           TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
