@@ -1,4 +1,4 @@
-name: 企鹅读书完整版
+name: 好好读书吧
 
 on:
   workflow_dispatch:
